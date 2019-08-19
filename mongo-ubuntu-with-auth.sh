@@ -1,4 +1,8 @@
-# Configure mongodb.list file with the correct location Adi
+# Receive parameter for Mongod DB Admin Credentials
+mongoAdmin=$1
+mongoPass=$2
+
+# Configure mongodb.list file with the correct location 
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
 echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
 
@@ -20,6 +24,10 @@ sudo apt-get install -y mongodb-org
 # sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf
 
 
-# Enable Authorization
+sudo service mongod start
+
+sleep 8
+mongoCmd="{user: \"$mongoAdmin\", pwd: \"$mongoPass\", roles:[{ role: \"root\", db: \"admin\"}]}"
+mongo --eval "db.createUser($mongoCmd)"
 sudo sed -i -e 's/#security:/security:\n  authorization: \"enabled\"/g' /etc/mongod.conf
 sudo service mongod restart
