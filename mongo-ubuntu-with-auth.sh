@@ -23,11 +23,18 @@ sudo apt-get install -y mongodb-org
 # Uncomment this to bind to all ip addresses
 # sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf
 
-
 sudo service mongod start
-
 sleep 8
 mongoCmd="{user: \"$mongoAdmin\", pwd: \"$mongoPass\", roles:[{ role: \"root\", db: \"admin\"}]}"
 mongo --eval "db.createUser($mongoCmd)"
 sudo sed -i -e 's/#security:/security:\n  authorization: \"enabled\"/g' /etc/mongod.conf
 sudo service mongod restart
+
+# limiting ports
+sudo ufw allow 22
+sudo ufw allow 53
+sudo ufw allow 27017
+echo "y" | sudo ufw enable
+
+# start mongod.service at startup
+sudo systemctl enable mongod.service
