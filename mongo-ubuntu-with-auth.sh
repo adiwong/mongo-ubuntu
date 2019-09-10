@@ -26,7 +26,7 @@ sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf
 sudo service mongod start
 sleep 8
 mongoCmd="{user: \"$mongoAdmin\", pwd: \"$mongoPass\", roles:[{ role: \"root\", db: \"admin\"}]}"
-mongo --eval "db.createUser($mongoCmd)"
+mongo localhost:27017/admin --eval "db.createUser($mongoCmd)"
 sudo sed -i -e 's/#security:/security:\n  authorization: \"enabled\"/g' /etc/mongod.conf
 sudo service mongod restart
 
